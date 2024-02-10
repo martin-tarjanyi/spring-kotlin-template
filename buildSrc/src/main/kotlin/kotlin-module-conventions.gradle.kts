@@ -35,6 +35,7 @@ dependencies {
     implementation(platform(libs.spring.boot.dependencies))
     implementation(platform(libs.spring.cloud.dependencies))
     implementation(libs.kotlin.logging)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     annotationProcessor(platform(libs.spring.boot.dependencies))
 
