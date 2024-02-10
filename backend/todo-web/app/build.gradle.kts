@@ -1,44 +1,30 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-	id("org.springframework.boot") version "3.2.2"
-	id("io.spring.dependency-management") version "1.1.4"
-	kotlin("jvm") version "1.9.22"
-	kotlin("plugin.spring") version "1.9.22"
-}
-
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_21
-}
-
-repositories {
-	mavenCentral()
+	id("kotlin-module-conventions")
+	alias(libs.plugins.spring.boot)
+	alias(libs.plugins.git.properties)
 }
 
 dependencies {
+	implementation(project(":backend:todo-common:domain"))
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("io.micrometer:micrometer-tracing-bridge-brave")
-	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+	implementation("io.micrometer:micrometer-tracing-bridge-otel")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs += "-Xjsr305=strict"
-		jvmTarget = "21"
+springBoot {
+	buildInfo {
+		excludes.set(setOf("time"))
 	}
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+// app integration test should run after other integration tests as it has the biggest scope
+tasks.named("integrationTest") {
+	shouldRunAfter(rootProject.subprojects
+		.filter { it != project }
+		.flatMap { it.tasks }
+		.filter { it.name == "integrationTest" })
 }
