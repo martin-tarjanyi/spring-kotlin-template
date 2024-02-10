@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 group = "com.example.product"
@@ -51,13 +52,14 @@ testing {
                     all {
                         testTask.configure {
                             testLogging {
-                                events = setOf(
-                                    TestLogEvent.PASSED,
-                                    TestLogEvent.SKIPPED,
-                                    TestLogEvent.FAILED,
-                                    TestLogEvent.STANDARD_OUT,
-                                    TestLogEvent.STANDARD_ERROR
-                                )
+                                events =
+                                    setOf(
+                                        TestLogEvent.PASSED,
+                                        TestLogEvent.SKIPPED,
+                                        TestLogEvent.FAILED,
+                                        TestLogEvent.STANDARD_OUT,
+                                        TestLogEvent.STANDARD_ERROR,
+                                    )
                                 exceptionFormat = TestExceptionFormat.FULL
                             }
                         }
