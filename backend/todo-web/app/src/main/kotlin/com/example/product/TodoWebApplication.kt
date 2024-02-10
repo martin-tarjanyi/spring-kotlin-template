@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class SpringKotlinTemplateApplication
+class TodoWebApplication
 
 fun main(args: Array<String>) {
-	runApplication<SpringKotlinTemplateApplication>(*args)
+	runApplication<TodoWebApplication>(*args)
 }
