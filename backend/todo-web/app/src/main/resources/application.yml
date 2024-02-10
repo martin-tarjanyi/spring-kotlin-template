@@ -1,0 +1,15 @@
+spring.threads.virtual.enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      group:
+        readiness:
+          include: "readinessState,ping,diskSpace"
