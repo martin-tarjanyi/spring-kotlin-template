@@ -1,6 +1,6 @@
-package com.example.product.domain.model
+package com.example.product.dataaccess.mongo.model
 
-data class Todo(
+data class TodoData(
     val id: String,
     val title: String,
     val description: String,

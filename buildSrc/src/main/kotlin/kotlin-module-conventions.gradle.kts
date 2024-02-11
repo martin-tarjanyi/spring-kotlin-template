@@ -43,6 +43,7 @@ dependencies {
     testImplementation(libs.kotest)
     testImplementation(libs.kotest.spring)
     testImplementation(libs.mockk)
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 testing {
