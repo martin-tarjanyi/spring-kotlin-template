@@ -1,80 +1,68 @@
 package com.example.product.dataaccess.mongo
 
-import com.example.product.domain.model.Todo
+import com.example.product.domain.model.SaveTodo
 import com.example.product.domain.port.out.TodoPersistencePort
-import io.kotest.core.extensions.Extension
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
 
-@SpringBootTest
-@EnableAutoConfiguration
-class TodoMongoPersistenceIntegrationTest : ShouldSpec() {
+internal class TodoMongoPersistenceIntegrationTest : BaseMongoIntegrationTest() {
     @Autowired
-    private lateinit var port: TodoPersistencePort
+    private lateinit var persistencePort: TodoPersistencePort
 
     init {
-        context("findAll") {
-            should("return all todos") {
+        context("find by ID") {
+            should("return the todo") {
                 // given
-                port.save(
-                    Todo(
-                        id = "1",
-                        title = "title",
-                        description = "description",
-                        completed = false,
-                    ),
-                )
-                port.save(
-                    Todo(
-                        id = "2",
-                        title = "title",
-                        description = "description",
-                        completed = true,
-                    ),
-                )
+                val todo = persistencePort.save(createTodoForSave())
 
                 // when-then
-                port.findAll(incompleteOnly = false)
-                    .map { it.id }
-                    .shouldContainExactly("1", "2")
+                persistencePort.findById(todo.id)
+                    ?.let {
+                        it.title shouldBe "title"
+                        it.description shouldBe "description"
+                        it.completed shouldBe false
+                    }
+            }
+
+            should("return null if the todo does not exist") {
+                // when-then
+                persistencePort.findById("non-existent-id")
+                    .shouldBe(null)
+            }
+        }
+
+        context("find all") {
+            should("return all todos") {
+                // given
+                persistencePort.save(createTodoForSave(completed = true))
+                persistencePort.save(createTodoForSave(completed = false))
+
+                // when-then
+                persistencePort.findAll(incompleteOnly = false)
+                    .shouldHaveSize(2)
             }
 
             should("return only incomplete todos") {
                 // given
-                port.save(
-                    Todo(
-                        id = "1",
-                        title = "title",
-                        description = "description",
-                        completed = false,
-                    ),
-                )
-                port.save(
-                    Todo(
-                        id = "2",
-                        title = "title",
-                        description = "description",
-                        completed = true,
-                    ),
-                )
+                persistencePort.save(createTodoForSave(completed = false))
+                persistencePort.save(createTodoForSave(completed = true))
 
                 // when-then
-                port.findAll(incompleteOnly = true)
-                    .map { it.id }
-                    .shouldContainExactly("1")
+                persistencePort.findAll(incompleteOnly = true)
+                    .shouldHaveSize(1)
+                    .forEach { it.completed shouldBe false }
             }
         }
     }
 
-    override fun extensions(): List<Extension> = listOf(SpringExtension, MongoKotestExtension)
-
-    @Configuration
-    @ComponentScan
-    internal class TestConfig
+    private fun createTodoForSave(
+        title: String = "title",
+        description: String = "description",
+        completed: Boolean = false,
+    ) = SaveTodo(
+        title = title,
+        description = description,
+        completed = completed,
+    )
 }

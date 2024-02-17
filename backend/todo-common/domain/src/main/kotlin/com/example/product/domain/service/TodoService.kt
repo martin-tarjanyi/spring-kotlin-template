@@ -1,7 +1,7 @@
 package com.example.product.domain.service
 
 import com.example.product.domain.model.Todo
-import com.example.product.domain.port.`in`.FindTodoUseCase
+import com.example.product.domain.port.inward.FindTodoUseCase
 import com.example.product.domain.port.out.TodoPersistencePort
 import org.springframework.stereotype.Component
 

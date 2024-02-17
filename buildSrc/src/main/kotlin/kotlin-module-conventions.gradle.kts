@@ -53,6 +53,7 @@ testing {
                 targets {
                     all {
                         testTask.configure {
+                            jvmArgs("-XX:+EnableDynamicAgentLoading")
                             testLogging {
                                 events =
                                     setOf(

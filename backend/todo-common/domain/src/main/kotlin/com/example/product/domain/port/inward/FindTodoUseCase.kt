@@ -1,4 +1,4 @@
-package com.example.product.domain.port.`in`
+package com.example.product.domain.port.inward
 
 import com.example.product.domain.model.Todo
 

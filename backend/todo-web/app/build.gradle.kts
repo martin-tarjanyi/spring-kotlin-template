@@ -13,6 +13,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("io.micrometer:micrometer-tracing-bridge-otel")
+
+    integrationTestImplementation(testFixtures(project(":backend:todo-common:dataaccess:mongo")))
 }
 
 springBoot {

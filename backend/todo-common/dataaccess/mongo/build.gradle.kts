@@ -5,9 +5,11 @@ plugins {
 
 dependencies {
     implementation(project(":backend:todo-common:domain"))
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation(libs.mongo.coroutine)
+    implementation(libs.mongo.bson.kotlinx)
+    implementation("org.springframework:spring-context")
+
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
 
     testFixturesApi(libs.kotest)
     testFixturesApi(libs.kotest.testcontainers)
