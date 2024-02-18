@@ -12,7 +12,7 @@ mongo-driver = "4.11.1"
 spring-boot = "3.2.2"
 spring-cloud = "2023.0.0"
 springdoc = "2.3.0"
-wiremock = "3.3.1"
+wiremock = "3.4.0"
 
 [libraries]
 kotest = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
@@ -28,7 +28,7 @@ mongo-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongo
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 spring-cloud-dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring-cloud" }
 springdoc-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc" }
-wiremock = { module = "org.wiremock:wiremock", version.ref = "wiremock" }
+wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

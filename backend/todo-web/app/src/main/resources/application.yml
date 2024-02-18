@@ -13,3 +13,5 @@ management:
       group:
         readiness:
           include: "readinessState,ping,diskSpace"
+
+MONGO_CONNECTION_URI: mongodb://localhost:27017
