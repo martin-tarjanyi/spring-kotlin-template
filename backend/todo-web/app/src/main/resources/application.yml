@@ -1,4 +1,5 @@
 spring:
+  reactor.context-propagation: auto
   threads.virtual.enabled: true
   docker.compose.lifecycle-management: start-only
 
