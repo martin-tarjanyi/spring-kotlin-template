@@ -15,12 +15,15 @@ dependencies {
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("io.micrometer:micrometer-tracing-bridge-otel")
 
+    developmentOnly(platform(libs.spring.boot.dependencies))
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+
     integrationTestImplementation(testFixtures(project(":backend:todo-common:dataaccess:mongo")))
 }
 
 springBoot {
     buildInfo {
-        excludes.set(setOf("time"))
+        excludes = setOf("time")
     }
 }
 
