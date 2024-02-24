@@ -5,7 +5,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
-    kotlin("plugin.spring")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -35,15 +34,11 @@ dependencies {
     implementation(platform(libs.spring.boot.dependencies))
     implementation(platform(libs.spring.cloud.dependencies))
     implementation(libs.kotlin.logging)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     annotationProcessor(platform(libs.spring.boot.dependencies))
 
     // test
     testImplementation(libs.kotest)
-    testImplementation(libs.kotest.spring)
     testImplementation(libs.mockk)
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 testing {

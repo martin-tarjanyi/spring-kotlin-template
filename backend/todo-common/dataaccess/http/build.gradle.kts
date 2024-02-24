@@ -1,5 +1,5 @@
 plugins {
-    id("kotlin-module-conventions")
+    id("spring-module-conventions")
     id("test-fixture-conventions")
 }
 

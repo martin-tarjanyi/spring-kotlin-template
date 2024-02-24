@@ -5,8 +5,10 @@ import com.example.product.dataaccess.http.starwars.StarWarsApi
 import com.example.product.dataaccess.http.starwars.model.StarWarsCharacter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.notFound
 import com.github.tomakehurst.wiremock.client.WireMock.okJson
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.extensions.spring.SpringExtension
@@ -18,9 +20,12 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.context.TestPropertySource
+import kotlin.time.Duration.Companion.seconds
 
 @SpringBootTest
 @EnableAutoConfiguration
+@TestPropertySource(properties = ["star-wars-api.http.readTimeout=1s"])
 class StarWarsApiIntegrationTest : ShouldSpec() {
     @Autowired
     private lateinit var starWarsApi: StarWarsApi
@@ -41,23 +46,57 @@ class StarWarsApiIntegrationTest : ShouldSpec() {
     }
 
     init {
-        should("get a person") {
-            val stub =
-                StarWarsCharacter(
-                    name = "Luke Skywalker",
-                    height = 160,
-                    birthYear = "19BY",
+        context("Get person") {
+            should("return person") {
+                val stub =
+                    StarWarsCharacter(
+                        name = "Luke Skywalker",
+                        height = 160,
+                        birthYear = "19BY",
+                    )
+
+                wiremock.stubFor(
+                    get(urlMatching("/people/25")).willReturn(
+                        okJson("").withBody(objectMapper.writeValueAsString(stub)),
+                    ),
                 )
 
-            wiremock.stubFor(
-                get(urlMatching("/people/25")).willReturn(
-                    okJson("").withBody(objectMapper.writeValueAsString(stub)),
-                ),
-            )
+                val character = starWarsApi.getPerson(25)
 
-            val character = starWarsApi.getPerson(25)
+                character.name shouldBe "Luke Skywalker"
+            }
 
-            character.name shouldBe "Luke Skywalker"
+            should("not find a person") {
+                wiremock.stubFor(
+                    get(urlMatching("/people/404")).willReturn(
+                        notFound().withBody("""{ "detail": "Not found"}"""),
+                    ),
+                )
+
+                shouldThrowAny {
+                    starWarsApi.getPerson(404)
+                }
+            }
+
+            should("time out") {
+                val stub =
+                    StarWarsCharacter(
+                        name = "Luke Skywalker",
+                        height = 160,
+                        birthYear = "19BY",
+                    )
+
+                wiremock.stubFor(
+                    get(urlMatching("/people/25")).willReturn(
+                        okJson("").withBody(objectMapper.writeValueAsString(stub))
+                            .withFixedDelay(5.seconds.inWholeMilliseconds.toInt()),
+                    ),
+                )
+
+                shouldThrowAny {
+                    starWarsApi.getPerson(25)
+                }
+            }
         }
     }
 

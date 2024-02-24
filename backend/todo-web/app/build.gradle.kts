@@ -1,5 +1,5 @@
 plugins {
-    id("kotlin-module-conventions")
+    id("spring-module-conventions")
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.git.properties)
 }
