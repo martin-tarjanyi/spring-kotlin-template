@@ -68,7 +68,9 @@ private object HttpLoggerFilter : ExchangeFilterFunction {
 
         try {
             logProperties += listOf("method" to request.method().name(), "url" to request.url())
-            next.exchange(request).awaitSingle()
+            val clientResponse = next.exchange(request).awaitSingle()
+            logProperties += listOf("status" to clientResponse.statusCode().value())
+            clientResponse
         } catch (e: Exception) {
             logProperties += errorProperties(e)
             throw e
