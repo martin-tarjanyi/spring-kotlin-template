@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 import kotlin.time.Duration.Companion.seconds
 
 @RestController
-internal class HelloController {
+class HelloController {
     val logger = KotlinLogging.logger {}
 
     @GetMapping("/hello")
