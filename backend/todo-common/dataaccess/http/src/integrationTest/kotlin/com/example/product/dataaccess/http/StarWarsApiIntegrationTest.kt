@@ -18,6 +18,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.TestPropertySource
@@ -26,6 +27,7 @@ import kotlin.time.Duration.Companion.seconds
 @SpringBootTest
 @EnableAutoConfiguration
 @TestPropertySource(properties = ["star-wars-api.http.readTimeout=1s"])
+@ActiveProfiles("test")
 class StarWarsApiIntegrationTest : ShouldSpec() {
     @Autowired
     private lateinit var starWarsApi: StarWarsApi

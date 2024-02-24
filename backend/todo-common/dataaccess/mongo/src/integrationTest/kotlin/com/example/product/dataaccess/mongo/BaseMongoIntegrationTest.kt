@@ -7,11 +7,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 
 @SpringBootTest(classes = [BaseMongoIntegrationTest.TestConfig::class])
 @EnableAutoConfiguration
+@ActiveProfiles("test")
 internal abstract class BaseMongoIntegrationTest : ShouldSpec() {
     override fun extensions(): List<Extension> = listOf(SpringExtension)
 
