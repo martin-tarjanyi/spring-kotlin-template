@@ -2,13 +2,12 @@ package com.example.product.dataaccess.http.common
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.channel.ChannelOption
-import kotlinx.coroutines.reactor.awaitSingle
-import kotlinx.coroutines.reactor.mono
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientRequest
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction
-import org.springframework.web.reactive.function.client.ExchangeFunction
+import org.springframework.web.reactive.function.client.ClientResponse
+import org.springframework.web.reactive.function.client.CoExchangeFilterFunction
+import org.springframework.web.reactive.function.client.CoExchangeFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import org.springframework.web.reactive.function.client.support.WebClientAdapter
@@ -56,21 +55,21 @@ class HttpClientFactory(private val webClientBuilder: WebClient.Builder) {
 
 inline fun <reified T> HttpClientFactory.create(clientProperties: HttpClientProperties): T = create(clientProperties, T::class.java)
 
-private object HttpLoggerFilter : ExchangeFilterFunction {
+private object HttpLoggerFilter : CoExchangeFilterFunction() {
     private val logger = KotlinLogging.logger("http-call")
 
-    override fun filter(
+    override suspend fun filter(
         request: ClientRequest,
-        next: ExchangeFunction,
-    ) = mono {
+        next: CoExchangeFunction,
+    ): ClientResponse {
         val logProperties = mutableMapOf<String, Any>()
         val start = System.currentTimeMillis()
 
         try {
             logProperties += listOf("method" to request.method().name(), "url" to request.url())
-            val clientResponse = next.exchange(request).awaitSingle()
+            val clientResponse = next.exchange(request)
             logProperties += listOf("status" to clientResponse.statusCode().value())
-            clientResponse
+            return clientResponse
         } catch (e: Exception) {
             logProperties += errorProperties(e)
             throw e
