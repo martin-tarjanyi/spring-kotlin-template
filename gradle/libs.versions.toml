@@ -8,6 +8,7 @@ kotlin = "1.9.22"
 kotlin-logging = "6.0.3"
 ktlint = "12.1.0"
 logstash-encoder = "7.4"
+mapstruct = "1.5.5.Final"
 mockk = "1.13.9"
 mongo-driver = "4.11.1"
 spring-boot = "3.2.2"
@@ -24,6 +25,8 @@ kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
 ktlint = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
 logstash-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash-encoder" }
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mongo-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongo-driver" }
 mongo-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongo-driver" }

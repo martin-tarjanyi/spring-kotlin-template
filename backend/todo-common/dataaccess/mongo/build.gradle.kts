@@ -1,6 +1,7 @@
 plugins {
     id("spring-module-conventions")
     id("test-fixture-conventions")
+    id("mapstruct-conventions")
 }
 
 dependencies {
