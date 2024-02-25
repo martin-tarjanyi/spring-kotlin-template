@@ -1,7 +1,7 @@
 package com.example.product
 
 import com.example.product.logging.LogTestListener
-import io.kotest.inspectors.shouldForAny
+import io.kotest.inspectors.shouldForOne
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotBeBlank
 import org.springframework.test.web.reactive.server.expectBody
@@ -11,8 +11,8 @@ class LogWebIntegrationTest : BaseWebIntegrationTest() {
         val logListener = LogTestListener()
         listener(logListener)
 
-        context("log") {
-            should("return in header and log trace ID") {
+        context("log endpoint") {
+            should("contain trace ID in header and log") {
                 val result = webTestClient.get().uri("/log")
                     .exchange()
                     .expectStatus().isOk
@@ -22,11 +22,11 @@ class LogWebIntegrationTest : BaseWebIntegrationTest() {
                 val traceId = result.responseHeaders["traceid"]?.firstOrNull().shouldNotBeBlank()!!
 
                 logListener.events
-                    .shouldForAny { event ->
+                    .shouldForOne { event ->
                         event.formattedMessage.shouldContain("Before delay")
                         event.mdcPropertyMap["traceId"].shouldContain(traceId)
                     }
-                    .shouldForAny { event ->
+                    .shouldForOne { event ->
                         event.formattedMessage.shouldContain("After delay")
                         event.mdcPropertyMap["traceId"].shouldContain(traceId)
                     }

@@ -3,6 +3,10 @@ spring:
   threads.virtual.enabled: true
   docker.compose.lifecycle-management: start-only
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 management:
   endpoints:
     web:
