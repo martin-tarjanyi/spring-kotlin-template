@@ -9,4 +9,5 @@ data class TodoData(
     val title: String,
     val description: String,
     val completed: Boolean,
+    val extraData: String? = null,
 )

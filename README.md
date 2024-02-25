@@ -7,6 +7,7 @@
 Sample application written in Kotlin with Spring Boot following hexagonal architecture.
 
 ## Links
+
 * [Swagger](http://localhost:8080/swagger-ui.html)
 
 ## Development
@@ -20,9 +21,9 @@ Sample application written in Kotlin with Spring Boot following hexagonal archit
 ### Recommended
 
 * IntelliJ plugins
-  * Kotest
-  * Ktlint
-  * Gradle Version Catalogs
+    * Kotest
+    * Ktlint
+    * Gradle Version Catalogs
 
 ## Technologies
 
@@ -31,16 +32,19 @@ Sample application written in Kotlin with Spring Boot following hexagonal archit
 * Spring Boot 3+ (Webflux)
 * Kotlin with coroutines
 * Gradle 8+
-  * Version catalog
-  * Convention plugins
+    * Multi-module structure
+    * Version catalog
+    * Convention plugins (see [buildSrc](buildSrc/src/main/kotlin))
+        * Reuse build logic in different modules
 * Swagger
 * Mongo
 * Spring HTTP interfaces
-* Structure logging with JSON support
+* Structured logging with JSON support
 * Tracing with Micrometer
+* Mapstruct - automatic mapping
 * Dependency Management
-  * Uses Spring managed dependency versions where possible
-  * Other library versions are managed via [Gradle version catalog](gradle/libs.versions.toml)
+    * Uses Spring managed dependency versions where possible
+    * Other library versions are managed via [Gradle version catalog](gradle/libs.versions.toml)
 
 ### Testing
 
