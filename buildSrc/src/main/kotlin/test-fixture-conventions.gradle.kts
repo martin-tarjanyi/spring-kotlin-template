@@ -12,5 +12,6 @@ val libs = the<LibrariesForLibs>()
 dependencies {
     testFixturesImplementation(platform(libs.spring.boot.dependencies))
     testFixturesImplementation(platform(libs.spring.cloud.dependencies))
+    testFixturesImplementation(libs.kotest)
     testFixturesAnnotationProcessor(platform(libs.spring.boot.dependencies))
 }

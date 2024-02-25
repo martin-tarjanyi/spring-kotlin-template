@@ -19,6 +19,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     integrationTestImplementation(testFixtures(project(":backend:todo-common:dataaccess:mongo")))
+    integrationTestImplementation(testFixtures(project(":backend:todo-common:util:logging")))
 }
 
 springBoot {
