@@ -1,5 +1,6 @@
 plugins {
     id("kotlin-module-conventions")
+    id("test-fixture-conventions")
 }
 
 dependencies {

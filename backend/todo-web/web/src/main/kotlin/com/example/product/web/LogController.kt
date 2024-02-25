@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RestController
 import kotlin.time.Duration.Companion.seconds
 
 @RestController
-class HelloController {
-    val logger = KotlinLogging.logger {}
+class LogController {
+    private val logger = KotlinLogging.logger {}
 
-    @GetMapping("/hello")
-    suspend fun hello(): String {
+    @GetMapping("/log")
+    suspend fun log(): String {
         logger.info { "Before delay" }
         delay(1.seconds)
         logger.info { "After delay" }

@@ -12,5 +12,4 @@ dependencies {
     implementation("org.hibernate.validator:hibernate-validator")
 
     testFixturesApi(libs.wiremock)
-    testFixturesImplementation(libs.kotest)
 }
