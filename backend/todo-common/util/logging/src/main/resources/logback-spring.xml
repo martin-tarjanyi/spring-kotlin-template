@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <conversionRule conversionWord="ckvp" converterClass="com.example.product.logging.ColoredKeyValuePairConverter" />
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%-15.15thread] %-5level %-40.40(%logger{36}) [%X{traceId}] -- %msg -- %kvp%n
+            <pattern>%d{HH:mm:ss.SSS} %yellow([%15.15thread]) %highlight(%-5level) %cyan(%40.40(%logger{36})) %white([%X{traceId}]) : %msg -- %ckvp{green} %n
             </pattern>
             <charset>utf8</charset>
         </encoder>
