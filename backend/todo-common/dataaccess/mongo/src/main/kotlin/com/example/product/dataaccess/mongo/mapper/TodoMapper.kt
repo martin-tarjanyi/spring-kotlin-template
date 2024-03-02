@@ -1,7 +1,7 @@
 package com.example.product.dataaccess.mongo.mapper
 
 import com.example.product.dataaccess.mongo.model.TodoData
-import com.example.product.domain.model.SaveTodo
+import com.example.product.domain.model.SaveTodoCommand
 import com.example.product.domain.model.Todo
 import org.bson.types.ObjectId
 import org.mapstruct.Mapper
@@ -12,7 +12,7 @@ internal interface TodoMapper {
     @Mapping(target = "extraData", ignore = true)
     @Mapping(source = "objectId", target = "id")
     fun toData(
-        saveTodo: SaveTodo,
+        saveTodoCommand: SaveTodoCommand,
         objectId: ObjectId = ObjectId(),
     ): TodoData
 

@@ -1,4 +1,4 @@
-package com.example.product.web
+package com.example.product.web.filter
 
 import io.micrometer.tracing.Tracer
 import org.springframework.stereotype.Component

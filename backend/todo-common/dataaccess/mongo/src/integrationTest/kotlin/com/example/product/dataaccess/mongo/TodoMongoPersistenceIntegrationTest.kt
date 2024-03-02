@@ -1,9 +1,11 @@
 package com.example.product.dataaccess.mongo
 
-import com.example.product.domain.model.SaveTodo
+import com.example.product.domain.model.SaveTodoCommand
 import com.example.product.domain.port.out.TodoPersistencePort
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 
 internal class TodoMongoPersistenceIntegrationTest : BaseMongoIntegrationTest() {
@@ -18,7 +20,8 @@ internal class TodoMongoPersistenceIntegrationTest : BaseMongoIntegrationTest() 
 
                 // when-then
                 persistencePort.findById(todo.id)
-                    ?.let {
+                    .shouldNotBeNull()
+                    .let {
                         it.title shouldBe "title"
                         it.description shouldBe "description"
                         it.completed shouldBe false
@@ -27,7 +30,7 @@ internal class TodoMongoPersistenceIntegrationTest : BaseMongoIntegrationTest() 
 
             should("return null if the todo does not exist") {
                 // when-then
-                persistencePort.findById("non-existent-id")
+                persistencePort.findById(ObjectId().toString())
                     .shouldBe(null)
             }
         }
@@ -60,7 +63,7 @@ internal class TodoMongoPersistenceIntegrationTest : BaseMongoIntegrationTest() 
         title: String = "title",
         description: String = "description",
         completed: Boolean = false,
-    ) = SaveTodo(
+    ) = SaveTodoCommand(
         title = title,
         description = description,
         completed = completed,

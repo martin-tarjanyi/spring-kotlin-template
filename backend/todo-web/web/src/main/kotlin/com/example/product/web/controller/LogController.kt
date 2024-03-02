@@ -1,4 +1,4 @@
-package com.example.product.web
+package com.example.product.web.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.media.Content

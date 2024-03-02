@@ -20,7 +20,7 @@ java {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
+        freeCompilerArgs += listOf("-Xjsr305=strict", "-Xjvm-default=all")
         jvmTarget = "21"
     }
 }
@@ -78,6 +78,7 @@ testing {
             targets {
                 all {
                     testTask.configure {
+                        jvmArgs("-XX:+EnableDynamicAgentLoading")
                         shouldRunAfter(test)
                     }
                 }
