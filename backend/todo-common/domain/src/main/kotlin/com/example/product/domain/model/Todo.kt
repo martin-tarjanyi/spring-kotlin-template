@@ -7,7 +7,7 @@ data class Todo(
     val completed: Boolean,
 )
 
-data class SaveTodo(
+data class SaveTodoCommand(
     val title: String,
     val description: String,
     val completed: Boolean,

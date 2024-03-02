@@ -4,4 +4,6 @@ import com.example.product.domain.model.Todo
 
 interface FindTodoUseCase {
     suspend fun findAll(incompleteOnly: Boolean): List<Todo>
+
+    suspend fun findById(id: String): Todo?
 }
