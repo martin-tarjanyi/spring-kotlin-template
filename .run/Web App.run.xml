@@ -4,6 +4,7 @@
         <module name="spring-kotlin-template.backend.todo-web.app.main"/>
         <shortenClasspath name="NONE"/>
         <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev"/>
+        <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/todo-web/app"/>
         <method v="2">
             <option name="Make" enabled="true"/>
         </method>

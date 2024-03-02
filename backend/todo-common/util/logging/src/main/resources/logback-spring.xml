@@ -2,7 +2,7 @@
 <configuration>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%-15.15thread] %-5level %-40.40(%logger{36}) [%X{traceId}] -- %msg -- %kvp%n
+            <pattern>%d{HH:mm:ss.SSS} %yellow([%15.15thread]) %highlight(%-5level) %cyan(%40.40(%logger{36})) %white([%X{traceId}]) : %msg -- %magenta(%kvp) %n
             </pattern>
             <charset>utf8</charset>
         </encoder>
