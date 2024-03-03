@@ -2,6 +2,8 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
+    <springProperty name="appName" source="spring.application.name"/>
+
     <conversionRule conversionWord="ckvp" converterClass="com.example.product.logging.ColoredKeyValuePairConverter" />
 
     <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
@@ -10,7 +12,7 @@
         </http>
         <format>
             <label>
-                <pattern>app=todo-app,host=${HOSTNAME},level=%level</pattern>
+                <pattern>app=${appName},host=${HOSTNAME},level=%level</pattern>
             </label>
             <message class="com.github.loki4j.logback.JsonLayout">
                 <customProvider class="com.example.product.logging.KeyValuePairLokiJsonProvider"/>

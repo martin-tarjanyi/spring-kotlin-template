@@ -4,9 +4,7 @@ build/
 !backend/gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-tools/data/mongo
-tools/grafana/grafana
-tools/grafana/loki
+docker/compose/data/
 
 ### STS ###
 .apt_generated

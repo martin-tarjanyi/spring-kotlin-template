@@ -4,16 +4,36 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./tools/data/mongo:/data/db
+      - ./docker/compose/data/mongo:/data/db
   loki:
     image: grafana/loki:2.9.5
     ports:
       - "3100:3100"
     volumes:
-      - ./tools/grafana/loki:/loki
+      - ./docker/compose/data/loki:/loki
+  tempo:
+    image: grafana/tempo:2.4.0
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./docker/compose/config/tempo.yaml:/etc/tempo.yaml
+      - ./docker/compose/data/tempo:/tmp/tempo
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./docker/compose/config/prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - "9090:9090"
   grafana:
     image: grafana/grafana:10.2.4
     ports:
       - "3000:3000"
     volumes:
-      - ./tools/grafana/grafana:/var/lib/grafana
+      - ./docker/compose/data/grafana:/var/lib/grafana

@@ -6,7 +6,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotBeBlank
 import org.springframework.test.web.reactive.server.expectBody
 
-class LogWebIntegrationTest : BaseWebIntegrationTest() {
+class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
     init {
         val logListener = LogTestListener()
         listener(logListener)
