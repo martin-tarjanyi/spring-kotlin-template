@@ -6,4 +6,5 @@ plugins {
 dependencies {
     implementation("ch.qos.logback:logback-classic")
     implementation(libs.logstash.encoder)
+    implementation(libs.loki.logback)
 }

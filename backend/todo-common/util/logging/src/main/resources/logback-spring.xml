@@ -4,6 +4,21 @@
 
     <conversionRule conversionWord="ckvp" converterClass="com.example.product.logging.ColoredKeyValuePairConverter" />
 
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>http://localhost:3100/loki/api/v1/push</url>
+        </http>
+        <format>
+            <label>
+                <pattern>app=todo-app,host=${HOSTNAME},level=%level</pattern>
+            </label>
+            <message class="com.github.loki4j.logback.JsonLayout">
+                <customProvider class="com.example.product.logging.KeyValuePairLokiJsonProvider"/>
+            </message>
+            <sortByTime>true</sortByTime>
+        </format>
+    </appender>
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %yellow([%15.15thread]) %highlight(%-5level) %cyan(%40.40(%logger{36})) %white([%X{traceId}]) : %msg -- %ckvp{green} %n
@@ -17,6 +32,12 @@
             <includeMdcKeyName>traceId</includeMdcKeyName>
         </encoder>
     </appender>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="LOKI"/>
+        </root>
+    </springProfile>
 
     <springProfile name="dev | test">
         <root level="INFO">

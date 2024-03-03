@@ -9,6 +9,7 @@ Sample application written in Kotlin with Spring Boot following hexagonal archit
 ## Links
 
 * [Swagger](http://localhost:8080/swagger-ui.html)
+* [Grafana](http://localhost:3000)
 
 ## Development
 
