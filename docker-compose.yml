@@ -5,3 +5,15 @@ services:
       - "27017:27017"
     volumes:
       - ./tools/data/mongo:/data/db
+  loki:
+    image: grafana/loki:2.9.5
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./tools/grafana/loki:/loki
+  grafana:
+    image: grafana/grafana:10.2.4
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./tools/grafana/grafana:/var/lib/grafana
