@@ -12,6 +12,7 @@ val libs = the<LibrariesForLibs>()
 dependencies {
     // prod
     implementation(project(":backend:todo-common:util:logging"))
+    implementation("io.micrometer:micrometer-tracing")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
