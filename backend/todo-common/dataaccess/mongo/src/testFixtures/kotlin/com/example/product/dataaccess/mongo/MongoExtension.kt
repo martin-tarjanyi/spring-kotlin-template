@@ -2,13 +2,14 @@ package com.example.product.dataaccess.mongo
 
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import io.kotest.core.listeners.AfterEachListener
+import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import org.bson.BsonDocument
 import org.testcontainers.containers.MongoDBContainer
 
-object MongoExtension : BeforeProjectListener, AfterEachListener {
+object MongoExtension : BeforeProjectListener, AfterProjectListener, AfterEachListener {
     private val container =
         MongoDBContainer("mongo:7.0")
             .withReuse(true)
@@ -18,8 +19,12 @@ object MongoExtension : BeforeProjectListener, AfterEachListener {
     override suspend fun beforeProject() {
         if (!container.isRunning) {
             container.start()
-            client = MongoClient.create(container.connectionString)
         }
+        client = MongoClient.create(container.connectionString)
+    }
+
+    override suspend fun afterProject() {
+        client.close()
     }
 
     override suspend fun afterEach(
