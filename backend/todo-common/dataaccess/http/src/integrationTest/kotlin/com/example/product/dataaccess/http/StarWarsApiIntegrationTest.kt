@@ -9,9 +9,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.notFound
 import com.github.tomakehurst.wiremock.client.WireMock.okJson
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -34,8 +32,6 @@ class StarWarsApiIntegrationTest : ShouldSpec() {
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
-
-    override fun extensions(): List<Extension> = listOf(SpringExtension)
 
     companion object {
         @JvmStatic

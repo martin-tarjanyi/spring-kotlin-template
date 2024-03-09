@@ -1,8 +1,6 @@
 package com.example.product.dataaccess.mongo
 
-import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.extensions.spring.SpringExtension
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -15,8 +13,6 @@ import org.springframework.test.context.DynamicPropertySource
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 internal abstract class BaseMongoIntegrationTest : ShouldSpec() {
-    override fun extensions(): List<Extension> = listOf(SpringExtension)
-
     companion object {
         @JvmStatic
         @DynamicPropertySource
