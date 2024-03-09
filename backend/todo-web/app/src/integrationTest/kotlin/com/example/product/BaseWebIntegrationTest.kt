@@ -2,7 +2,6 @@ package com.example.product
 
 import com.example.product.dataaccess.mongo.MongoExtension
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.extensions.spring.SpringExtension
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -21,8 +20,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 abstract class BaseWebIntegrationTest : ShouldSpec() {
     @Autowired
     protected lateinit var webTestClient: WebTestClient
-
-    override fun extensions() = listOf(SpringExtension)
 
     companion object {
         @JvmStatic

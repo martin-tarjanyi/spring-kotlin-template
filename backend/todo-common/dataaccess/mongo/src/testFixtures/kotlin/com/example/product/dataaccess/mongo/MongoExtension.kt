@@ -1,7 +1,6 @@
 package com.example.product.dataaccess.mongo
 
 import com.mongodb.kotlin.client.coroutine.MongoClient
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.test.TestCase
@@ -33,8 +32,4 @@ object MongoExtension : BeforeProjectListener, AfterEachListener {
     }
 
     fun connectionString(): String = container.connectionString
-}
-
-object KotestProjectConfig : AbstractProjectConfig() {
-    override fun extensions() = listOf(MongoExtension)
 }

@@ -3,7 +3,6 @@ package com.example.product.dataaccess.http
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
@@ -38,8 +37,4 @@ object WiremockExtension : BeforeProjectListener, AfterProjectListener, AfterEac
     }
 
     fun port(): Int = wiremock.port()
-}
-
-object KotestProjectConfig : AbstractProjectConfig() {
-    override fun extensions() = listOf(WiremockExtension)
 }
