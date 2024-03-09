@@ -17,6 +17,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     // test
+    testImplementation(project(":backend:todo-common:util:test"))
     testImplementation(libs.kotest.spring)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

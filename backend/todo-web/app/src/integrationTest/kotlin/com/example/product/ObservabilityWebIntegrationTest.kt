@@ -1,6 +1,8 @@
 package com.example.product
 
 import com.example.product.logging.LogTestListener
+import com.example.product.util.test.RetryExtension
+import io.kotest.core.test.TestCase
 import io.kotest.inspectors.shouldForOne
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -15,9 +17,13 @@ class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
     @LocalServerPort
     private var port: Int = 0
 
+    override suspend fun beforeTest(testCase: TestCase) {
+        println("beforeTest")
+    }
+
     init {
         val logListener = LogTestListener()
-        listener(logListener)
+        register(logListener, RetryExtension(maxAttempts = 20))
 
         context("log endpoint") {
             should("contain trace ID in header and log") {
@@ -52,6 +58,13 @@ class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
                         event.loggerName shouldBe "ACCESS_LOG"
                         event.mdcPropertyMap["traceId"].shouldContain(traceId)
                     }
+            }
+        }
+
+        context("test") {
+            should("be intermittent but retried") {
+                println("intermittent")
+                (1..3).random() shouldBe 1
             }
         }
     }
