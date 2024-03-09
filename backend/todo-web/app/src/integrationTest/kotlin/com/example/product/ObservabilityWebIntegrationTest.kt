@@ -2,6 +2,7 @@ package com.example.product
 
 import com.example.product.logging.LogTestListener
 import com.example.product.util.test.RetryExtension
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.core.test.TestCase
 import io.kotest.inspectors.shouldForOne
 import io.kotest.matchers.shouldBe
@@ -14,17 +15,20 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.toEntity
 
 class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
+    private val logger = KotlinLogging.logger {}
+
     @LocalServerPort
     private var port: Int = 0
 
+    private val logListener = LogTestListener()
+
+    override fun extensions() = listOf(logListener, RetryExtension(maxAttempts = 20))
+
     override suspend fun beforeTest(testCase: TestCase) {
-        println("beforeTest")
+        logger.info { "Before test: \"${testCase.name.testName}\"" }
     }
 
     init {
-        val logListener = LogTestListener()
-        register(logListener, RetryExtension(maxAttempts = 20))
-
         context("log endpoint") {
             should("contain trace ID in header and log") {
                 val result = webTestClient.get().uri("/log")
@@ -63,7 +67,7 @@ class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
 
         context("test") {
             should("be intermittent but retried") {
-                println("intermittent")
+                logger.info { "Executing intermittent test..." }
                 (1..3).random() shouldBe 1
             }
         }
