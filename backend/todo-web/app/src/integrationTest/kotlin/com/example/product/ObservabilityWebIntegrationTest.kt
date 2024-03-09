@@ -3,6 +3,7 @@ package com.example.product
 import com.example.product.logging.LogTestListener
 import com.example.product.util.test.RetryExtension
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.test.TestCase
 import io.kotest.inspectors.shouldForOne
 import io.kotest.matchers.shouldBe
@@ -13,6 +14,7 @@ import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.toEntity
+import kotlin.time.Duration.Companion.seconds
 
 class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
     private val logger = KotlinLogging.logger {}
@@ -57,11 +59,13 @@ class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
 
                 val traceId = result.headers["traceid"]?.firstOrNull().shouldNotBeBlank()!!
 
-                logListener.events
-                    .shouldForOne { event ->
-                        event.loggerName shouldBe "ACCESS_LOG"
-                        event.mdcPropertyMap["traceId"].shouldContain(traceId)
-                    }
+                eventually(5.seconds) {
+                    logListener.events
+                        .shouldForOne { event ->
+                            event.loggerName shouldBe "ACCESS_LOG"
+                            event.mdcPropertyMap["traceId"].shouldContain(traceId)
+                        }
+                }
             }
         }
 
