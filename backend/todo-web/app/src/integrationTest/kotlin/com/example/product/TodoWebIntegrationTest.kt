@@ -1,6 +1,7 @@
 package com.example.product
 
 import com.example.product.dataaccess.mongo.saveTodoCommand
+import com.example.product.domain.model.TodoId
 import com.example.product.domain.port.out.TodoPersistencePort
 import com.example.product.web.model.request.CreateTodoRequest
 import com.example.product.web.model.response.TodoResponse
@@ -59,7 +60,7 @@ class TodoWebIntegrationTest : BaseWebIntegrationTest() {
                 val todo = todoPersistencePort.save(saveTodoCommand())
 
                 // WHEN-THEN
-                val result = webTestClient.get().uri { it.path("/todos/{id}").build(todo.id) }
+                val result = webTestClient.get().uri { it.path("/todos/{id}").build(todo.id.value) }
                     .exchange()
                     .expectStatus().isOk
                     .expectBody<TodoResponse>()
@@ -98,7 +99,7 @@ class TodoWebIntegrationTest : BaseWebIntegrationTest() {
 
                 val id = result?.shouldNotBeNull()
                     ?.id.shouldNotBeNull()
-                todoPersistencePort.findById(id).shouldNotBeNull()
+                todoPersistencePort.findById(TodoId(id)).shouldNotBeNull()
             }
         }
     }

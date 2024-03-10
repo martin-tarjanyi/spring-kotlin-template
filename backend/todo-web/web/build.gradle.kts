@@ -1,6 +1,5 @@
 plugins {
     id("spring-module-conventions")
-    id("mapstruct-conventions")
 }
 
 dependencies {
