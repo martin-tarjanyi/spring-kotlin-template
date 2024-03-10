@@ -3,18 +3,21 @@ package com.example.product.dataaccess.mongo.mapper
 import com.example.product.dataaccess.mongo.model.TodoData
 import com.example.product.domain.model.SaveTodoCommand
 import com.example.product.domain.model.Todo
-import org.bson.types.ObjectId
-import org.mapstruct.Mapper
-import org.mapstruct.Mapping
+import com.example.product.domain.model.TodoId
 
-@Mapper(uses = [MongoMapper::class])
-internal interface TodoMapper {
-    @Mapping(target = "extraData", ignore = true)
-    @Mapping(source = "objectId", target = "id")
-    fun toData(
-        saveTodoCommand: SaveTodoCommand,
-        objectId: ObjectId = ObjectId(),
-    ): TodoData
+fun SaveTodoCommand.toData(): TodoData {
+    return TodoData(
+        title = this.title,
+        description = this.description,
+        completed = this.completed,
+    )
+}
 
-    fun toDomain(todoData: TodoData): Todo
+fun TodoData.toDomain(): Todo {
+    return Todo(
+        id = TodoId(this.id.toHexString()),
+        title = this.title,
+        description = this.description,
+        completed = this.completed,
+    )
 }

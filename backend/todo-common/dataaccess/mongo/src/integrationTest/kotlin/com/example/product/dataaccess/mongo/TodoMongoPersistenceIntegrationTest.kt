@@ -1,6 +1,7 @@
 package com.example.product.dataaccess.mongo
 
 import com.example.product.domain.model.SaveTodoCommand
+import com.example.product.domain.model.TodoId
 import com.example.product.domain.port.out.TodoPersistencePort
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -30,7 +31,7 @@ internal class TodoMongoPersistenceIntegrationTest : BaseMongoIntegrationTest() 
 
             should("return null if the todo does not exist") {
                 // when-then
-                persistencePort.findById(ObjectId().toString())
+                persistencePort.findById(TodoId(ObjectId().toString()))
                     .shouldBe(null)
             }
         }
