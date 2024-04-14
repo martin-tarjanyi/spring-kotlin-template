@@ -10,6 +10,7 @@ Sample application written in Kotlin with Spring Boot following hexagonal archit
 
 * [Swagger](http://localhost:8080/swagger-ui.html)
 * [Grafana](http://localhost:3000)
+* [RedisInsight](http://localhost:5540)
 
 ## Development
 
@@ -39,6 +40,7 @@ Sample application written in Kotlin with Spring Boot following hexagonal archit
         * Reuse build logic in different modules
 * Swagger
 * Mongo
+* Redis
 * Spring HTTP interfaces
 * Structured logging with JSON support
 * Tracing with Micrometer

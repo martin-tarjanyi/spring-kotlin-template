@@ -29,13 +29,6 @@
         </encoder>
     </appender>
 
-    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <includeMdcKeyName>traceId</includeMdcKeyName>
-            <jsonFactoryDecorator class="com.example.product.logging.LogstashJsonCustomizer"/>
-        </encoder>
-    </appender>
-
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="LOKI"/>
@@ -49,6 +42,13 @@
     </springProfile>
 
     <springProfile name="!(dev | test)">
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdcKeyName>traceId</includeMdcKeyName>
+                <jsonFactoryDecorator class="com.example.product.logging.LogstashJsonCustomizer"/>
+            </encoder>
+        </appender>
+
         <root level="INFO">
             <appender-ref ref="JSON_CONSOLE"/>
         </root>

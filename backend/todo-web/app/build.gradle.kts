@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":backend:todo-common:domain"))
     implementation(project(":backend:todo-common:dataaccess:mongo"))
     implementation(project(":backend:todo-common:dataaccess:http"))
+    implementation(project(":backend:todo-common:dataaccess:cache"))
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")

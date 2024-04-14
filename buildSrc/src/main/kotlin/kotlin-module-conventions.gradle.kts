@@ -25,6 +25,10 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-parameters")
+}
+
 // Workaround for using version catalogs in precompiled script plugins.
 // See https://github.com/gradle/gradle/issues/15383#issuecomment-779893192
 val libs = the<LibrariesForLibs>()
@@ -33,6 +37,8 @@ dependencies {
     // prod
     implementation(platform(libs.spring.boot.dependencies))
     implementation(platform(libs.spring.cloud.dependencies))
+    implementation(platform(libs.spring.cloud.dependencies))
+    implementation(platform(libs.jackson.bom))
     implementation(libs.kotlin.logging)
     annotationProcessor(platform(libs.spring.boot.dependencies))
 
