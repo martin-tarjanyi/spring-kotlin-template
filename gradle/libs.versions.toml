@@ -1,6 +1,7 @@
 [versions]
 # declare all versions here in alphabetical order
 git-properties = "2.4.1"
+jackson = "2.17.0"
 kotest = "5.8.0"
 kotest-spring = "1.1.3"
 kotest-testcontainers = "2.0.2"
@@ -15,9 +16,12 @@ mongo-driver = "4.11.1"
 spring-boot = "3.2.2"
 spring-cloud = "2023.0.0"
 springdoc = "2.3.0"
+testcontainers-redis = "2.2.2"
 wiremock = "3.4.0"
 
 [libraries]
+# Jackson version overridden to fix https://github.com/FasterXML/jackson-module-kotlin/issues/650
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
 kotest = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotest-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotest-spring" }
 kotest-testcontainers = { module = "io.kotest.extensions:kotest-extensions-testcontainers", version.ref = "kotest-testcontainers" }
@@ -35,6 +39,7 @@ mongo-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongo
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 spring-cloud-dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring-cloud" }
 springdoc-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc" }
+testcontainers-redis = { module = "com.redis:testcontainers-redis", version.ref = "testcontainers-redis" }
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
 [plugins]

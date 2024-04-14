@@ -5,6 +5,18 @@ services:
       - "27017:27017"
     volumes:
       - ./docker/compose/data/mongo:/data/db
+  redis:
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
+  redis-insight:
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"
+    links:
+      - redis
+    volumes:
+      - ./docker/compose/data/redisinsight:/data
   loki:
     image: grafana/loki:2.9.5
     ports:

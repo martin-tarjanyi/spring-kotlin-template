@@ -1,6 +1,8 @@
 package com.example.product.web.controller
 
+import com.example.product.domain.port.out.CachePort
 import com.example.product.domain.port.out.SpaceOperaPort
+import com.example.product.domain.port.out.cache
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -14,7 +16,10 @@ import kotlin.time.Duration.Companion.seconds
 
 @RestController
 @Tag(name = "Observability", description = "Observability testing endpoints")
-class ObservabilityController(private val spaceOperaPort: SpaceOperaPort) {
+class ObservabilityController(
+    private val spaceOperaPort: SpaceOperaPort,
+    private val cache: CachePort,
+) {
     private val logger = KotlinLogging.logger {}
 
     @GetMapping("/log")
@@ -32,7 +37,10 @@ class ObservabilityController(private val spaceOperaPort: SpaceOperaPort) {
         delay(100.milliseconds)
         logger.info { "After delay" }
 
-        val character = spaceOperaPort.randomCharacter()
+        val character = cache.cache("space-character") {
+            spaceOperaPort.randomCharacter()
+        }
+
         logger.info { "After call" }
 
         return character.name
