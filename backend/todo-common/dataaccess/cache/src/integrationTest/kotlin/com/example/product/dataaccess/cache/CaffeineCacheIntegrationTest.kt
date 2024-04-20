@@ -2,11 +2,12 @@ package com.example.product.dataaccess.cache
 
 import com.example.product.dataaccess.cache.caffeine.CaffeineCache
 import com.example.product.domain.port.out.CachePort
-import com.example.product.domain.port.out.TtlCalculator
+import com.example.product.domain.port.out.RandomTtlProvider
 import com.example.product.domain.port.out.cache
 import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -26,8 +27,12 @@ class CaffeineCacheIntegrationTest : ShouldSpec() {
     private lateinit var cache: CachePort
 
     init {
-        context("cache block") {
-            should("store in caffeine") {
+        context("caffeine cache") {
+            should("be caffeine cache") {
+                cache.shouldBeInstanceOf<CaffeineCache>()
+            }
+
+            should("save to cache and return") {
                 cache.cache("key") { "computation" }.shouldBe("computation")
                 delay(100.milliseconds)
                 cache.cache("key") { "different" }.shouldBe("computation")
@@ -46,7 +51,7 @@ class CaffeineCacheIntegrationTest : ShouldSpec() {
         fun testCaffeine(): CachePort =
             CaffeineCache(
                 enabled = true,
-                ttlCalculator = TtlCalculator(1.seconds, 2.seconds),
+                defaultTtlProvider = RandomTtlProvider(1.seconds, 2.seconds),
             )
     }
 }

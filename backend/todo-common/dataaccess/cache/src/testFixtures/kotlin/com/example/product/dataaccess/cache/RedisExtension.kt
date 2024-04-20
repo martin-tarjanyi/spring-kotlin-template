@@ -20,7 +20,7 @@ object RedisExtension : BeforeProjectListener, AfterProjectListener, AfterEachLi
         testCase: TestCase,
         result: TestResult,
     ) {
-        container.execInContainer("FLUSHALL")
+        container.execInContainer("redis-cli", "FLUSHALL")
     }
 
     fun host(): String = container.host

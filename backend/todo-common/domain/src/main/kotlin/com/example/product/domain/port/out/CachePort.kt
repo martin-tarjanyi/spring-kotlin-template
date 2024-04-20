@@ -11,10 +11,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 val logger = KotlinLogging.logger {}
 
-abstract class CachePort {
-    abstract val enabled: Boolean
-    abstract val ttlCalculator: TtlCalculator
-
+abstract class CachePort(
+    private val enabled: Boolean,
+    private val defaultTtlProvider: TtlProvider,
+) {
     suspend fun <T> get(
         key: String,
         typeRef: TypeReference<T>,
@@ -45,47 +45,54 @@ abstract class CachePort {
     suspend fun <T : Any> set(
         key: String,
         value: T,
+        ttlProvider: TtlProvider? = null,
     ) {
         if (enabled) {
-            runCatching { internalSet(key, value) }
-                .onFailure { e ->
-                    logger.error(e) { "Failed to set value for key \"$key\" in cache" }
-                }
+            runCatching {
+                val ttl = (value as? ExpiringCacheValue)?.ttl()
+                    ?: ttlProvider?.ttl()
+                    ?: defaultTtlProvider.ttl()
+                internalSet(key, value, ttl)
+            }.onFailure { e ->
+                logger.error(e) { "Failed to set value for key \"$key\" in cache" }
+            }
         }
     }
 
     protected abstract suspend fun <T : Any> internalSet(
         key: String,
         value: T,
+        ttl: Duration,
     )
 
     abstract suspend fun clear()
 }
 
-class TtlCalculator(private val min: Duration, private val max: Duration) {
-    fun calculate(value: Any): Duration {
-        return if (value is ExpiringCacheValue) {
-            value.ttl()
-        } else {
-            return (min.inWholeMilliseconds..max.inWholeMilliseconds).random().milliseconds
+suspend inline fun <reified T : Any?> CachePort.cache(
+    key: String,
+    ttlProvider: TtlProvider? = null,
+    valueSupplier: () -> T,
+): T {
+    return get(key, jacksonTypeRef<T>())
+        ?: valueSupplier().also { value ->
+            value?.let {
+                GlobalScope.launch(Dispatchers.Default) {
+                    set(key, it, ttlProvider)
+                }
+            }
         }
-    }
+}
+
+interface TtlProvider {
+    fun ttl(): Duration
+}
+
+class RandomTtlProvider(private val min: Duration, private val max: Duration) : TtlProvider {
+    override fun ttl() =
+        (min.inWholeMilliseconds..max.inWholeMilliseconds)
+            .random().milliseconds
 }
 
 interface ExpiringCacheValue {
     fun ttl(): Duration
-}
-
-suspend inline fun <reified T : Any?> CachePort.cache(
-    key: String,
-    supplier: () -> T,
-): T {
-    return get(key, jacksonTypeRef<T>())
-        ?: supplier().also {
-            if (it != null) {
-                GlobalScope.launch(Dispatchers.Default) {
-                    set(key, it)
-                }
-            }
-        }
 }
