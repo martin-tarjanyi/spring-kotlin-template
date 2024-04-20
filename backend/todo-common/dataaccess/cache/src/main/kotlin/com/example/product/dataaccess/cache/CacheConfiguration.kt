@@ -5,7 +5,7 @@ import com.example.product.dataaccess.cache.redis.CacheListProperties
 import com.example.product.dataaccess.cache.redis.CacheProperties
 import com.example.product.dataaccess.cache.redis.RedisCache
 import com.example.product.domain.port.out.CachePort
-import com.example.product.domain.port.out.TtlCalculator
+import com.example.product.domain.port.out.RandomTtlProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -38,14 +38,14 @@ class CacheConfiguration(
         template: ReactiveStringRedisTemplate,
         properties: CacheProperties,
     ): RedisCache {
-        val ttlCalculator = TtlCalculator(properties.minTtl.toKotlinDuration(), properties.maxTtl.toKotlinDuration())
-        return RedisCache(properties.enabled, ttlCalculator, template, objectMapper)
+        val ttlProvider = RandomTtlProvider(properties.minTtl.toKotlinDuration(), properties.maxTtl.toKotlinDuration())
+        return RedisCache(properties.enabled, ttlProvider, template, objectMapper)
     }
 
     private fun createCaffeineCache(properties: CacheProperties): CaffeineCache {
         return CaffeineCache(
             properties.enabled,
-            TtlCalculator(properties.minTtl.toKotlinDuration(), properties.maxTtl.toKotlinDuration()),
+            RandomTtlProvider(properties.minTtl.toKotlinDuration(), properties.maxTtl.toKotlinDuration()),
         )
     }
 }

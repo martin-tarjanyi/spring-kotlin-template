@@ -10,7 +10,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -66,21 +65,13 @@ class CachePortTest : ShouldSpec() {
             }
         }
 
-        context("ttl calculator") {
+        context("random ttl provider") {
             should("return random ttl") {
-                val ttlCalculator = TtlCalculator(5.seconds, 10.seconds)
-                ttlCalculator.calculate("value").should {
+                val ttlProvider = RandomTtlProvider(5.seconds, 10.seconds)
+                ttlProvider.ttl().should {
                     it.shouldBeGreaterThanOrEqualTo(5.seconds)
                     it.shouldBeLessThanOrEqualTo(10.seconds)
                 }
-            }
-
-            should("return ttl for ExpiringCacheValue") {
-                val ttlCalculator = TtlCalculator(5.seconds, 10.seconds)
-                val value = object : ExpiringCacheValue {
-                    override fun ttl(): Duration = 2.seconds
-                }
-                ttlCalculator.calculate(value).shouldBe(2.seconds)
             }
         }
     }
