@@ -28,9 +28,9 @@ class CachePortTest : ShouldSpec() {
                 result1 shouldBe "computation"
                 result2 shouldBe "computation2"
 
-                eventually(500.milliseconds) {
-                    testCache.cache("key") { IllegalStateException("should not be called") } shouldBe "computation"
-                    testCache.cache("key2") { IllegalStateException("should not be called") } shouldBe "computation2"
+                eventually(100.milliseconds) {
+                    testCache.cache<String>("key") { throw IllegalStateException("should not be called") } shouldBe "computation"
+                    testCache.cache<String>("key2") { throw IllegalStateException("should not be called") } shouldBe "computation2"
                 }
             }
 
