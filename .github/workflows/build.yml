@@ -26,3 +26,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Docker Build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: web.Dockerfile
+          push: false
