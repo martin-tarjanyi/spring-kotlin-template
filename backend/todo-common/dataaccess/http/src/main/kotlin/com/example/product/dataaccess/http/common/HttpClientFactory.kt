@@ -41,7 +41,8 @@ class HttpClientFactory(private val webClientBuilder: WebClient.Builder) {
             )
             .responseTimeout(clientProperties.readTimeout)
 
-        val webClient = webClientBuilder.baseUrl(clientProperties.baseUrl)
+        val webClient = webClientBuilder.clone()
+            .baseUrl(clientProperties.baseUrl)
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(HttpLoggerFilter)
             .build()
