@@ -3,45 +3,18 @@ package com.example.product.dataaccess.http
 import com.example.product.dataaccess.http.WiremockExtension.wiremock
 import com.example.product.dataaccess.http.starwars.StarWarsApi
 import com.example.product.dataaccess.http.starwars.model.StarWarsCharacter
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.notFound
 import com.github.tomakehurst.wiremock.client.WireMock.okJson
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
-import org.springframework.test.context.TestPropertySource
 import kotlin.time.Duration.Companion.seconds
 
-@SpringBootTest
-@EnableAutoConfiguration
-@TestPropertySource(properties = ["star-wars-api.http.readTimeout=1s"])
-@ActiveProfiles("test")
-class StarWarsApiIntegrationTest : ShouldSpec() {
+class StarWarsApiIntegrationTest : BaseHttpIntegrationTest() {
     @Autowired
     private lateinit var starWarsApi: StarWarsApi
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    companion object {
-        @JvmStatic
-        @DynamicPropertySource
-        fun registerProperties(registry: DynamicPropertyRegistry) {
-            registry.add("star-wars-api.http.baseUrl") {
-                "http://localhost:${WiremockExtension.port()}"
-            }
-        }
-    }
 
     init {
         context("Get person") {
@@ -97,8 +70,4 @@ class StarWarsApiIntegrationTest : ShouldSpec() {
             }
         }
     }
-
-    @Configuration
-    @ComponentScan
-    internal class TestConfig
 }
