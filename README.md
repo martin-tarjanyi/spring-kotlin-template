@@ -1,6 +1,6 @@
 # Spring Kotlin Template
 
-[![Build](https://github.com/martin-tarjanyi/spring-kotlin-template/actions/workflows/gradle.yml/badge.svg)](https://github.com/martin-tarjanyi/spring-kotlin-template/actions/workflows/gradle.yml)
+[![Build](https://github.com/martin-tarjanyi/spring-kotlin-template/actions/workflows/build.yml/badge.svg)](https://github.com/martin-tarjanyi/spring-kotlin-template/actions/workflows/build.yml)
 
 ## Intro
 
