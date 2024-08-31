@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 internal class PokemonService(private val pokemonApi: PokemonApi) : FictionalUniversePort {
-    override suspend fun randomCharacter() =
+    override suspend fun randomCreature() =
         pokemonApi.getPokemon((1..100).random())
             .let { FictionalCharacter(it.name) }
 }

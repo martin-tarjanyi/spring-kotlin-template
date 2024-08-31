@@ -13,5 +13,6 @@ dependencies {
     testFixturesImplementation(platform(libs.spring.boot.dependencies))
     testFixturesImplementation(platform(libs.spring.cloud.dependencies))
     testFixturesImplementation(libs.kotest)
+    testFixturesImplementation(libs.kotlin.logging)
     testFixturesAnnotationProcessor(platform(libs.spring.boot.dependencies))
 }

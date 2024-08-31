@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 internal class StarWarsService(private val starWarsApi: StarWarsApi) : FictionalUniversePort {
-    override suspend fun randomCharacter() =
+    override suspend fun randomCreature() =
         starWarsApi.getPerson((1..100).random())
             .let { FictionalCharacter(it.name) }
 }
