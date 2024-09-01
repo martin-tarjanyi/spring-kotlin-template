@@ -39,8 +39,8 @@ class ObservabilityController(
         delay(100.milliseconds)
         logger.info { "After delay" }
 
-        val character = cache.cache("space-character") {
-            fictionalUniversePort.randomCharacter()
+        val character = cache.cache("fictional-character") {
+            fictionalUniversePort.randomCreature()
         }
 
         logger.info { "After call" }
