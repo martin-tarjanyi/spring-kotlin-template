@@ -16,44 +16,49 @@ class SpringDocConfiguration {
     lateinit var apiDocsProperties: ApiDocsProperties
 
     @Bean
-    fun operationEnvironmentCustomizer(): OperationCustomizer = OperationCustomizer { operation, handlerMethod ->
-        if (handlerMethod.method.annotations.any { it.annotationClass == OpenApiCustomerFacingEndpoint::class }) {
-            operation
-        } else if (apiDocsProperties.publishNonCustomerFacingEndpoints) {
-            operation
-        } else {
-            null
+    fun operationEnvironmentCustomizer(): OperationCustomizer =
+        OperationCustomizer { operation, handlerMethod ->
+            if (handlerMethod.method.annotations.any { it.annotationClass == OpenApiCustomerFacingEndpoint::class }) {
+                operation
+            } else if (apiDocsProperties.publishNonCustomerFacingEndpoints) {
+                operation
+            } else {
+                null
+            }
         }
-    }
 
     @Bean
-    fun propertyEnvironmentCustomizer(): PropertyCustomizer = PropertyCustomizer { property, type ->
-        if (type.ctxAnnotations.any { it.annotationClass == OpenApiInDevelopmentProperty::class } && !apiDocsProperties.publishInDevelopmentProperties) {
-            null
-        } else {
-            property
+    fun propertyEnvironmentCustomizer(): PropertyCustomizer =
+        PropertyCustomizer { property, type ->
+            if (type.ctxAnnotations.any { it.annotationClass == OpenApiInDevelopmentProperty::class } &&
+                !apiDocsProperties.publishInDevelopmentProperties
+            ) {
+                null
+            } else {
+                property
+            }
         }
-    }
 
     @Bean
-    fun openApiCleanupCustomizer(): OpenApiCustomizer = OpenApiCustomizer { openApi ->
-        // cleanup empty paths
-        openApi.paths
-            .filterValues { it.readOperations().isEmpty() }
-            .forEach { openApi.paths.remove(it.key) }
+    fun openApiCleanupCustomizer(): OpenApiCustomizer =
+        OpenApiCustomizer { openApi ->
+            // cleanup empty paths
+            openApi.paths
+                .filterValues { it.readOperations().isEmpty() }
+                .forEach { openApi.paths.remove(it.key) }
 
-        // cleanup unused tags
-        val usedTags = openApi.paths
-            .flatMap { it.value.readOperations() }
-            .flatMap { it.tags }
-            .toSet()
+            // cleanup unused tags
+            val usedTags = openApi.paths
+                .flatMap { it.value.readOperations() }
+                .flatMap { it.tags }
+                .toSet()
 
-        openApi.tags
-            .filter { !usedTags.contains(it.name) }
-            .forEach { openApi.tags.remove(it) }
+            openApi.tags
+                .filter { !usedTags.contains(it.name) }
+                .forEach { openApi.tags.remove(it) }
 
-        openApi
-    }
+            openApi
+        }
 }
 
 /**

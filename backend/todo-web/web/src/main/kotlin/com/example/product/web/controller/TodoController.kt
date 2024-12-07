@@ -24,43 +24,49 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Todo", description = "Todo task management endpoints")
 class TodoController(
     val findTodoUseCase: FindTodoUseCase,
-    val createTodoUseCase: CreateTodoUseCase
+    val createTodoUseCase: CreateTodoUseCase,
 ) {
     @GetMapping("/todos/{id}")
     @OpenApiCustomerFacingEndpoint
-    suspend fun getTodo(@PathVariable("id") id: String): TodoResponse =
-        findTodoUseCase.findById(TodoId(id))
+    suspend fun getTodo(
+        @PathVariable("id") id: String,
+    ): TodoResponse =
+        findTodoUseCase
+            .findById(TodoId(id))
             ?.let { it.toApi() }
             ?: throw NotFoundException()
 
     @GetMapping("/todos")
-    suspend fun getAll(@ParameterObject parameters: TodoQueryParameters): List<TodoResponse> =
-        findTodoUseCase.findAll(parameters.incompleteOnly)
+    suspend fun getAll(
+        @ParameterObject parameters: TodoQueryParameters,
+    ): List<TodoResponse> =
+        findTodoUseCase
+            .findAll(parameters.incompleteOnly)
             .map { it.toApi() }
 
     @PostMapping("/todos")
     @ResponseStatus(HttpStatus.CREATED)
     @OpenApiCustomerFacingEndpoint
-    suspend fun createTodo(@RequestBody request: CreateTodoRequest): TodoResponse {
+    suspend fun createTodo(
+        @RequestBody request: CreateTodoRequest,
+    ): TodoResponse {
         val command = request.toCommand()
         val todo: Todo = createTodoUseCase.create(command)
         return todo.toApi()
     }
 }
 
-fun Todo.toApi(): TodoResponse {
-    return TodoResponse(
+fun Todo.toApi(): TodoResponse =
+    TodoResponse(
         id = this.id.value,
         title = this.title,
         description = this.description,
         completed = this.completed,
     )
-}
 
-fun CreateTodoRequest.toCommand(): SaveTodoCommand {
-    return SaveTodoCommand(
+fun CreateTodoRequest.toCommand(): SaveTodoCommand =
+    SaveTodoCommand(
         title = this.title,
         description = this.description,
         completed = false,
     )
-}
