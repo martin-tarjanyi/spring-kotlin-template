@@ -15,7 +15,7 @@ mockk = "1.13.9"
 mongo-driver = "4.11.3"
 spring-boot = "3.2.9"
 spring-cloud = "2023.0.0"
-springdoc = "2.3.0"
+springdoc = "2.5.0"
 testcontainers-redis = "2.2.2"
 wiremock = "3.4.0"
 

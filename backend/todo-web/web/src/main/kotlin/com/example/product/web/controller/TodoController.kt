@@ -5,6 +5,7 @@ import com.example.product.domain.model.Todo
 import com.example.product.domain.model.TodoId
 import com.example.product.domain.port.inward.CreateTodoUseCase
 import com.example.product.domain.port.inward.FindTodoUseCase
+import com.example.product.web.configuration.OpenApiCustomerFacingEndpoint
 import com.example.product.web.error.NotFoundException
 import com.example.product.web.model.request.CreateTodoRequest
 import com.example.product.web.model.request.TodoQueryParameters
@@ -21,12 +22,17 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = "Todo", description = "Todo task management endpoints")
-class TodoController(val findTodoUseCase: FindTodoUseCase, val createTodoUseCase: CreateTodoUseCase) {
+class TodoController(
+    val findTodoUseCase: FindTodoUseCase,
+    val createTodoUseCase: CreateTodoUseCase,
+) {
     @GetMapping("/todos/{id}")
+    @OpenApiCustomerFacingEndpoint
     suspend fun getTodo(
         @PathVariable("id") id: String,
     ): TodoResponse =
-        findTodoUseCase.findById(TodoId(id))
+        findTodoUseCase
+            .findById(TodoId(id))
             ?.let { it.toApi() }
             ?: throw NotFoundException()
 
@@ -34,11 +40,13 @@ class TodoController(val findTodoUseCase: FindTodoUseCase, val createTodoUseCase
     suspend fun getAll(
         @ParameterObject parameters: TodoQueryParameters,
     ): List<TodoResponse> =
-        findTodoUseCase.findAll(parameters.incompleteOnly)
+        findTodoUseCase
+            .findAll(parameters.incompleteOnly)
             .map { it.toApi() }
 
     @PostMapping("/todos")
     @ResponseStatus(HttpStatus.CREATED)
+    @OpenApiCustomerFacingEndpoint
     suspend fun createTodo(
         @RequestBody request: CreateTodoRequest,
     ): TodoResponse {
@@ -48,19 +56,17 @@ class TodoController(val findTodoUseCase: FindTodoUseCase, val createTodoUseCase
     }
 }
 
-fun Todo.toApi(): TodoResponse {
-    return TodoResponse(
+fun Todo.toApi(): TodoResponse =
+    TodoResponse(
         id = this.id.value,
         title = this.title,
         description = this.description,
         completed = this.completed,
     )
-}
 
-fun CreateTodoRequest.toCommand(): SaveTodoCommand {
-    return SaveTodoCommand(
+fun CreateTodoRequest.toCommand(): SaveTodoCommand =
+    SaveTodoCommand(
         title = this.title,
         description = this.description,
         completed = false,
     )
-}
