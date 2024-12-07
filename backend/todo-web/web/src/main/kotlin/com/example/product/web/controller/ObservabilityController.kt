@@ -34,7 +34,7 @@ class ObservabilityController(
     }
 
     @GetMapping("/trace")
-    suspend fun trace(): String {
+    suspend fun trace(): TraceResponse {
         logger.info { "Before delay" }
         delay(100.milliseconds)
         logger.info { "After delay" }
@@ -45,6 +45,10 @@ class ObservabilityController(
 
         logger.info { "After call" }
 
-        return character.name
+        return TraceResponse(character.name)
     }
 }
+
+data class TraceResponse(
+    val character: String,
+)

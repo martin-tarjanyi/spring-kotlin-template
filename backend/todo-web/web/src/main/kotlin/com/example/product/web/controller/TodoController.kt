@@ -5,6 +5,7 @@ import com.example.product.domain.model.Todo
 import com.example.product.domain.model.TodoId
 import com.example.product.domain.port.inward.CreateTodoUseCase
 import com.example.product.domain.port.inward.FindTodoUseCase
+import com.example.product.web.configuration.OpenApiCustomerFacingEndpoint
 import com.example.product.web.error.NotFoundException
 import com.example.product.web.model.request.CreateTodoRequest
 import com.example.product.web.model.request.TodoQueryParameters
@@ -21,27 +22,26 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = "Todo", description = "Todo task management endpoints")
-class TodoController(val findTodoUseCase: FindTodoUseCase, val createTodoUseCase: CreateTodoUseCase) {
+class TodoController(
+    val findTodoUseCase: FindTodoUseCase,
+    val createTodoUseCase: CreateTodoUseCase
+) {
     @GetMapping("/todos/{id}")
-    suspend fun getTodo(
-        @PathVariable("id") id: String,
-    ): TodoResponse =
+    @OpenApiCustomerFacingEndpoint
+    suspend fun getTodo(@PathVariable("id") id: String): TodoResponse =
         findTodoUseCase.findById(TodoId(id))
             ?.let { it.toApi() }
             ?: throw NotFoundException()
 
     @GetMapping("/todos")
-    suspend fun getAll(
-        @ParameterObject parameters: TodoQueryParameters,
-    ): List<TodoResponse> =
+    suspend fun getAll(@ParameterObject parameters: TodoQueryParameters): List<TodoResponse> =
         findTodoUseCase.findAll(parameters.incompleteOnly)
             .map { it.toApi() }
 
     @PostMapping("/todos")
     @ResponseStatus(HttpStatus.CREATED)
-    suspend fun createTodo(
-        @RequestBody request: CreateTodoRequest,
-    ): TodoResponse {
+    @OpenApiCustomerFacingEndpoint
+    suspend fun createTodo(@RequestBody request: CreateTodoRequest): TodoResponse {
         val command = request.toCommand()
         val todo: Todo = createTodoUseCase.create(command)
         return todo.toApi()
