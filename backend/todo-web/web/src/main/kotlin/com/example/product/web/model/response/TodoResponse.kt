@@ -1,6 +1,6 @@
 package com.example.product.web.model.response
 
-import com.example.product.web.configuration.OpenApiInDevelopmentProperty
+import com.example.product.web.configuration.InDevelopmentProperty
 import java.time.Instant
 
 data class TodoResponse(
@@ -8,6 +8,6 @@ data class TodoResponse(
     val title: String,
     val description: String,
     val completed: Boolean,
-    @OpenApiInDevelopmentProperty
+    @InDevelopmentProperty
     val createdAt: Instant? = null,
 )
