@@ -5,11 +5,17 @@ import com.example.product.domain.model.Todo
 import com.example.product.domain.model.TodoId
 import com.example.product.domain.port.inward.CreateTodoUseCase
 import com.example.product.domain.port.inward.FindTodoUseCase
-import com.example.product.web.configuration.OpenApiCustomerFacingEndpoint
+import com.example.product.web.configuration.CustomerFacingOperation
+import com.example.product.web.configuration.NoSecurityRequirement
+import com.example.product.web.configuration.SecuritySchemes
+import com.example.product.web.configuration.SecurityScopes
 import com.example.product.web.error.NotFoundException
 import com.example.product.web.model.request.CreateTodoRequest
 import com.example.product.web.model.request.TodoQueryParameters
 import com.example.product.web.model.response.TodoResponse
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.HttpStatus
@@ -22,12 +28,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = "Todo", description = "Todo task management endpoints")
+@SecurityRequirement(name = SecuritySchemes.OAUTH2, scopes = [SecurityScopes.WRITE])
 class TodoController(
     val findTodoUseCase: FindTodoUseCase,
     val createTodoUseCase: CreateTodoUseCase,
 ) {
     @GetMapping("/todos/{id}")
-    @OpenApiCustomerFacingEndpoint
+    @CustomerFacingOperation
     suspend fun getTodo(
         @PathVariable("id") id: String,
     ): TodoResponse =
@@ -37,6 +44,8 @@ class TodoController(
             ?: throw NotFoundException()
 
     @GetMapping("/todos")
+    @CustomerFacingOperation
+    @NoSecurityRequirement
     suspend fun getAll(
         @ParameterObject parameters: TodoQueryParameters,
     ): List<TodoResponse> =
@@ -46,7 +55,10 @@ class TodoController(
 
     @PostMapping("/todos")
     @ResponseStatus(HttpStatus.CREATED)
-    @OpenApiCustomerFacingEndpoint
+    @CustomerFacingOperation
+    @Operation(summary = "Create a new TODO")
+    @ApiResponse(responseCode = "201", description = "Created")
+    @SecurityRequirement(name = SecuritySchemes.OAUTH2, scopes = [SecurityScopes.WRITE])
     suspend fun createTodo(
         @RequestBody request: CreateTodoRequest,
     ): TodoResponse {
