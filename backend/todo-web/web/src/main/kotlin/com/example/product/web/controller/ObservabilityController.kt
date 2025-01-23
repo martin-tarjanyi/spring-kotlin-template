@@ -4,6 +4,8 @@ import com.example.product.domain.port.out.CachePort
 import com.example.product.domain.port.out.FictionalUniversePort
 import com.example.product.domain.port.out.cache
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micrometer.core.annotation.Timed
+import io.micrometer.observation.ObservationRegistry
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -21,6 +23,7 @@ class ObservabilityController(
     @Qualifier("pokemonService")
     private val fictionalUniversePort: FictionalUniversePort,
     private val cache: CachePort,
+    private val observationRegistry: ObservationRegistry
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -46,6 +49,21 @@ class ObservabilityController(
         logger.info { "After call" }
 
         return TraceResponse(character.name)
+    }
+
+    @GetMapping("/hello")
+    @Timed(value = "hello.endpoint", longTask = true)
+    suspend fun hello(): String {
+        val observation = observationRegistry.observationConfig().observation("hello.endpoint")
+        observation.start()
+        try {
+            logger.info { "Before delay in /hello" }
+            delay(1.seconds)
+            logger.info { "After delay in /hello" }
+        } finally {
+            observation.stop()
+        }
+        return "Hello, World!"
     }
 }
 

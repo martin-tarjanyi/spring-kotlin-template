@@ -69,6 +69,39 @@ class ObservabilityWebIntegrationTest : BaseWebIntegrationTest() {
             }
         }
 
+        context("hello endpoint") {
+            should("contain trace ID in header and log") {
+                val result = webTestClient.get().uri("/hello")
+                    .exchange()
+                    .expectStatus().isOk
+                    .expectBody<String>().isEqualTo("Hello, World!")
+                    .returnResult()
+
+                val traceId = result.responseHeaders["traceid"]?.firstOrNull().shouldNotBeBlank()!!
+
+                logListener.events
+                    .shouldForOne { event ->
+                        event.formattedMessage.shouldContain("Before delay in /hello")
+                        event.mdcPropertyMap["traceId"].shouldContain(traceId)
+                    }
+                    .shouldForOne { event ->
+                        event.formattedMessage.shouldContain("After delay in /hello")
+                        event.mdcPropertyMap["traceId"].shouldContain(traceId)
+                    }
+            }
+
+            should("verify artificial latency") {
+                val startTime = System.currentTimeMillis()
+                webTestClient.get().uri("/hello")
+                    .exchange()
+                    .expectStatus().isOk
+                    .expectBody<String>().isEqualTo("Hello, World!")
+                val endTime = System.currentTimeMillis()
+                val duration = endTime - startTime
+                duration shouldBe (1000L plusOrMinus 100L)
+            }
+        }
+
         context("test") {
             should("be intermittent but retried") {
                 logger.info { "Executing intermittent test..." }
