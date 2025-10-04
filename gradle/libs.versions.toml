@@ -13,6 +13,8 @@ loki-logback = "1.5.0"
 mapstruct = "1.5.5.Final"
 mockk = "1.13.9"
 mongo-driver = "4.11.3"
+netflix-dgs = "10.1.2"
+netflix-dgs-codegen = "7.0.3"
 spring-boot = "3.4.10"
 spring-cloud = "2024.0.2"
 springdoc = "2.8.7"
@@ -36,6 +38,7 @@ mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.re
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mongo-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongo-driver" }
 mongo-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongo-driver" }
+netflix-dgs-starter = { module = "com.netflix.graphql.dgs:dgs-starter", version.ref = "netflix-dgs" }
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 spring-cloud-dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring-cloud" }
 springdoc-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc" }
@@ -43,5 +46,6 @@ testcontainers-redis = { module = "com.redis:testcontainers-redis", version.ref 
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
 [plugins]
-spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "git-properties" }
+netflix-dgs-codegen = { id = "com.netflix.dgs.codegen", version.ref = "netflix-dgs-codegen" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

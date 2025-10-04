@@ -1,0 +1,69 @@
+package com.example.product.dataaccess.http
+
+import com.example.product.dataaccess.http.WiremockExtension.wiremock
+import com.example.product.dataaccess.http.rickandmorty.RickAndMortyApi
+import com.github.tomakehurst.wiremock.client.WireMock.and
+import com.github.tomakehurst.wiremock.client.WireMock.containing
+import com.github.tomakehurst.wiremock.client.WireMock.okJson
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.reactive.function.client.WebClientResponseException
+
+class RickAndMortyApiIntegrationTest : BaseHttpIntegrationTest() {
+    @Autowired
+    private lateinit var rickAndMortyApi: RickAndMortyApi
+
+    init {
+        context("findCharacterById") {
+            should("return character") {
+                wiremock.stubFor(
+                    post("/graphql")
+                        .withRequestBody(
+                            and(
+                                containing("character(id: \\\"1\\\")"),
+                                containing("name"),
+                                containing("episode"),
+                            ),
+                        ).willReturn(okJson(mockResponse().trimIndent())),
+                )
+
+                val character = runCatching { rickAndMortyApi.findCharacterById("1") }
+                    .onFailure { e ->
+                        if (e is WebClientResponseException) {
+                            println("Error body: " + e.responseBodyAsString)
+                        }
+                    }.getOrThrow()
+
+                character shouldNotBe null
+                character.id shouldBe "1"
+                character.name shouldBe "Rick Sanchez"
+                character.episode?.size shouldBe 2
+                character.episode?.get(0)?.name shouldBe "Pilot"
+            }
+        }
+    }
+
+    private fun mockResponse(): String =
+        """
+        {
+        "data": {
+            "character": {
+                "id": "1",
+                "name": "Rick Sanchez",
+                "episode": [
+                    {
+                        "id": "1",
+                        "name": "Pilot"
+                    },
+                    {
+                        "id": "2",
+                        "name": "Lawnmower Dog"
+                    }
+                ]
+            }
+        }
+        }
+        """
+}
