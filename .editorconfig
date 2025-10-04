@@ -3,3 +3,6 @@ root = true
 [*.{kt,kts}]
 ktlint_standard_string-template-indent = disabled
 ktlint_standard_multiline-expression-wrapping = disabled
+
+[**/build/generated/**]
+ktlint = disabled

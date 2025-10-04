@@ -35,6 +35,9 @@ abstract class BaseHttpIntegrationTest : ShouldSpec() {
             registry.add("star-wars-api.http.baseUrl") {
                 "http://localhost:${WiremockExtension.port()}"
             }
+            registry.add("rick-and-morty-api.http.baseUrl") {
+                "http://localhost:${WiremockExtension.port()}/graphql"
+            }
         }
     }
 
