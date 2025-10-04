@@ -9,7 +9,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.reactive.function.client.WebClientResponseException
 
 class RickAndMortyClientIntegrationTest : BaseHttpIntegrationTest() {
     @Autowired
@@ -29,13 +28,7 @@ class RickAndMortyClientIntegrationTest : BaseHttpIntegrationTest() {
                         ).willReturn(okJson(mockResponse().trimIndent())),
                 )
 
-                val character = runCatching { client.findCharacterById("1") }
-                    .onFailure { e ->
-                        if (e is WebClientResponseException) {
-                            println("Error body: " + e.responseBodyAsString)
-                        }
-                    }.getOrThrow()
-                    .also { println(it) }
+                val character = client.findCharacterById("1")
 
                 character shouldNotBe null
                 character.id shouldBe "1"

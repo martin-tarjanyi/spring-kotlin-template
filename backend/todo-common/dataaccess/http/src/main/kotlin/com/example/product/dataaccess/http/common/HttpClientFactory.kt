@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.CoExchangeFilterFunction
 import org.springframework.web.reactive.function.client.CoExchangeFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientRequestException
+import org.springframework.web.reactive.function.client.awaitBodyOrNull
 import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory
 import reactor.netty.http.client.HttpClient
@@ -17,7 +18,9 @@ import reactor.netty.resources.ConnectionProvider
 import java.time.Duration
 
 @Component
-class HttpClientFactory(private val webClientBuilder: WebClient.Builder) {
+class HttpClientFactory(
+    private val webClientBuilder: WebClient.Builder,
+) {
     private val logger = KotlinLogging.logger { }
 
     fun <T> create(
@@ -28,20 +31,21 @@ class HttpClientFactory(private val webClientBuilder: WebClient.Builder) {
             message = "Creating HTTP client"
             payload = mapOf("interface" to interfaceType.simpleName, "properties" to clientProperties)
         }
-        val httpClient = HttpClient.create(
-            ConnectionProvider.builder(interfaceType.simpleName)
-                .maxConnections(clientProperties.maxConnections)
-                .pendingAcquireTimeout(Duration.ofSeconds(3))
-                .build(),
-        )
-            .compress(true)
+        val httpClient = HttpClient
+            .create(
+                ConnectionProvider
+                    .builder(interfaceType.simpleName)
+                    .maxConnections(clientProperties.maxConnections)
+                    .pendingAcquireTimeout(Duration.ofSeconds(3))
+                    .build(),
+            ).compress(true)
             .option(
                 ChannelOption.CONNECT_TIMEOUT_MILLIS,
                 clientProperties.connectionTimeout.toMillis().toInt(),
-            )
-            .responseTimeout(clientProperties.readTimeout)
+            ).responseTimeout(clientProperties.readTimeout)
 
-        val webClient = webClientBuilder.clone()
+        val webClient = webClientBuilder
+            .clone()
             .baseUrl(clientProperties.baseUrl)
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(HttpLoggerFilter)
@@ -70,6 +74,15 @@ private object HttpLoggerFilter : CoExchangeFilterFunction() {
             logProperties += listOf("method" to request.method().name(), "url" to request.url())
             val clientResponse = next.exchange(request)
             logProperties += listOf("status" to clientResponse.statusCode().value())
+            if (clientResponse.statusCode().isError) {
+                val body = clientResponse
+                    .awaitBodyOrNull(String::class)
+                    .also { logProperties += ("responseBody" to it.orEmpty()) }
+                return clientResponse
+                    .mutate()
+                    .apply { body?.let { body(it) } }
+                    .build()
+            }
             return clientResponse
         } catch (e: Exception) {
             logProperties += errorProperties(e)
