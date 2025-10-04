@@ -1,7 +1,7 @@
 package com.example.product.dataaccess.http
 
 import com.example.product.dataaccess.http.WiremockExtension.wiremock
-import com.example.product.dataaccess.http.rickandmorty.RickAndMortyApi
+import com.example.product.dataaccess.http.rickandmorty.RickAndMortyGraphQlClient
 import com.github.tomakehurst.wiremock.client.WireMock.and
 import com.github.tomakehurst.wiremock.client.WireMock.containing
 import com.github.tomakehurst.wiremock.client.WireMock.okJson
@@ -11,9 +11,9 @@ import io.kotest.matchers.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
-class RickAndMortyApiIntegrationTest : BaseHttpIntegrationTest() {
+class RickAndMortyClientIntegrationTest : BaseHttpIntegrationTest() {
     @Autowired
-    private lateinit var rickAndMortyApi: RickAndMortyApi
+    private lateinit var client: RickAndMortyGraphQlClient
 
     init {
         context("findCharacterById") {
@@ -29,12 +29,13 @@ class RickAndMortyApiIntegrationTest : BaseHttpIntegrationTest() {
                         ).willReturn(okJson(mockResponse().trimIndent())),
                 )
 
-                val character = runCatching { rickAndMortyApi.findCharacterById("1") }
+                val character = runCatching { client.findCharacterById("1") }
                     .onFailure { e ->
                         if (e is WebClientResponseException) {
                             println("Error body: " + e.responseBodyAsString)
                         }
                     }.getOrThrow()
+                    .also { println(it) }
 
                 character shouldNotBe null
                 character.id shouldBe "1"

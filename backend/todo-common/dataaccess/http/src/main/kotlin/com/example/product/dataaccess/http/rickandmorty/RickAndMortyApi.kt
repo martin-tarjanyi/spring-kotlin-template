@@ -1,7 +1,17 @@
 package com.example.product.dataaccess.http.rickandmorty
 
-import com.example.rickmorty.generated.types.Character
+import org.springframework.http.ResponseEntity
+import org.springframework.util.MultiValueMap
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.service.annotation.HttpExchange
+import org.springframework.web.service.annotation.PostExchange
 
+@HttpExchange
 interface RickAndMortyApi {
-    suspend fun findCharacterById(id: String): Character
+    @PostExchange
+    suspend fun graphQl(
+        @RequestHeader headers: MultiValueMap<String, String>,
+        @RequestBody body: String,
+    ): ResponseEntity<String>
 }
