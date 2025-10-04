@@ -37,6 +37,18 @@ class RickAndMortyClientIntegrationTest : BaseHttpIntegrationTest() {
                 character.episode?.get(0)?.name shouldBe "Pilot"
             }
         }
+
+        xcontext("findCharacterEpisodeAndLocations") {
+            should("return character with episode and locations") {
+                val response = client.findCharacterEpisodeAndLocations(
+                    characterId = "1",
+                    episodeId = "1",
+                    locationIds = listOf("1", "2", "3", "4"),
+                )
+
+                println(response)
+            }
+        }
     }
 
     private fun mockResponse(): String =
